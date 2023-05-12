@@ -31,77 +31,112 @@ import statsmodels.api as sm
 import scipy.stats as stats
 from sklearn.preprocessing import QuantileTransformer
 
-df=pd.read_csv("data_trans.csv")
+# READ CSV FILES
+df=pd.read_csv("/content/Data_to_Transform.csv")
 df
+# BASIC PROCESS
+df.head()
 
-sm.qqplot(df.HighlyPositiveSkew,fit=True,line='45')
+df.info()
+
+df.describe()
+
+df.tail()
+
+df.shape
+
+df.columns
+
+df.isnull().sum()
+
+df.duplicated()
+
+# LOG TRANSFORMATION
+# HIGHLY POSITIVE SKEW
+df['Highly Positive Skew'] = np.log(df['Highly Positive Skew'])
+
+sm.qqplot(df['Highly Positive Skew'],fit=True,line='45')
 plt.show()
 
-sm.qqplot(df.HighlyNegativeSkew,fit=True,line='45')
+# MODERATE POSITIVE SKEW
+df['Moderate Positive Skew'] = np.log(df['Moderate Positive Skew'])
+
+sm.qqplot(df['Moderate Positive Skew'],fit=True,line='45')
 plt.show()
 
-sm.qqplot(df.ModeratePositiveSkew,fit=True,line='45')
+# RECIPROCAL TRANSFORMATION
+# HIGHLY POSITIVE SKEW
+df['Highly Positive Skew'] = 1/df['Highly Positive Skew']
+
+sm.qqplot(df['Highly Positive Skew'],fit=True,line='45')
 plt.show()
 
-sm.qqplot(df.ModerateNegativeSkew,fit=True,line='45')
+# SQUARE ROOT TRANSFORMATION
+# HIGHLY POSITIVE SKEW
+df['Highly Positive Skew'] = df['Highly Positive Skew']**(1/1.2)
+
+sm.qqplot(df['Highly Positive Skew'],fit=True,line='45')
 plt.show()
 
-df['HighlyPositiveSkew']=np.log(df.HighlyPositiveSkew)
-sm.qqplot(df.HighlyPositiveSkew,fit=True,line='45')
+# POWER TRANSFORMATION
+# MODERATE POSITIVE SKEW
+df['Moderate Positive Skew_1'], parameters=stats.yeojohnson(df['Moderate Positive Skew'])
+
+sm.qqplot(df['Moderate Positive Skew_1'],fit=True,line='45')
 plt.show()
 
-df['HighlyNegativeSkew']=np.log(df.HighlyNegativeSkew)
-sm.qqplot(df.HighlyPositiveSkew,fit=True,line='45')
-plt.show()
-
-df['ModeratePositiveSkew_1'], parameters=stats.yeojohnson(df.ModeratePositiveSkew)
-sm.qqplot(df.ModeratePositiveSkew_1,fit=True,line='45')
-plt.show()
-
-df['ModerateNegativeSkew_1'], parameters=stats.yeojohnson(df.ModerateNegativeSkew)
-sm.qqplot(df.ModerateNegativeSkew_1,fit=True,line='45')
-plt.show()
-
+# MODERATE NEGATIVE SKEW
 from sklearn.preprocessing import PowerTransformer
 transformer=PowerTransformer("yeo-johnson")
-df['ModerateNegativeSkew_2']=pd.DataFrame(transformer.fit_transform(df[['ModerateNegativeSkew']]))
-sm.qqplot(df.ModerateNegativeSkew_2,fit=True,line='45')
+
+df['ModerateNegativeSkew_2']=pd.DataFrame(transformer.fit_transform(df[['Moderate Negative Skew']]))
+
+sm.qqplot(df['ModerateNegativeSkew_2'],fit=True,line='45')
 plt.show()
 
+# QUANTILE TRANSFORMATION
+# MODERATE NEGATIVE SKEW
 from sklearn.preprocessing import QuantileTransformer
-qt= QuantileTransformer(output_distribution = 'normal')
-df['ModerateNegativeSkew_2']=pd.DataFrame(qt.fit_transform(df[['ModerateNegativeSkew']]))
+qt = QuantileTransformer(output_distribution = 'normal')
 
-sm.qqplot(df.ModerateNegativeSkew_2,fit=True,line='45')
-plt.show()
+df['ModerateNegativeSkew_2'] = pd.DataFrame(qt.fit_transform(df[['Moderate Negative Skew']]))
 
-df2=df.copy()
-
-df2['HighlyPositiveSkew']= 1/df2.HighlyPositiveSkew
-sm.qqplot(df2.HighlyPositiveSkew,fit=True,line='45')
-
+sm.qqplot(df['ModerateNegativeSkew_2'],fit=True,line='45')
 plt.show()
 ```
 # OUTPUT:
-![image](https://user-images.githubusercontent.com/113497680/232675149-7437bd54-1fae-42f8-bea4-08750aa70b9c.png)
-
-![image](https://user-images.githubusercontent.com/113497680/232675250-4a7bcce2-968b-41e8-89ec-3d5f9e407138.png)
-
-![image](https://user-images.githubusercontent.com/113497680/232675286-027e6afd-7ec0-41d4-ba52-d40e64f477a2.png)
-
-![image](https://user-images.githubusercontent.com/113497680/232675322-73eeb783-767b-4adb-931c-7a0e274d777e.png)
-
-![image](https://user-images.githubusercontent.com/113497680/232675354-433d774e-0e35-4c11-aafa-c250d7ec852f.png)
-
-![image](https://user-images.githubusercontent.com/113497680/232675395-3f1302d2-a60a-4429-ae4d-20b4874f0a7e.png)
-
-![image](https://user-images.githubusercontent.com/113497680/232675432-6a96a00a-d253-45d3-b1f3-8a40dd10f02f.png)
-
-![image](https://user-images.githubusercontent.com/113497680/232675473-a25df458-3585-4dd1-bcf2-123de2599052.png)
-
-![image](https://user-images.githubusercontent.com/113497680/232675498-de4fd801-774b-4aaa-bd79-439616a1ef8c.png)
-
-![image](https://user-images.githubusercontent.com/113497680/232675519-0adfe302-30b8-422a-91d5-7fe71df40fbd.png)
+# Importing Libraries
+![image](https://github.com/harinidq/Ex-06-Feature-Transformation/assets/113497680/ba4ac67f-0855-460a-85f1-699e0084ec64)
+# Reading CSV File
+![image](https://github.com/harinidq/Ex-06-Feature-Transformation/assets/113497680/2afb767e-1aa4-4133-9a04-1da302a48605)
+# Basic Process
+![image](https://github.com/harinidq/Ex-06-Feature-Transformation/assets/113497680/66c5d8fa-4248-4c8b-ab21-1311f3f348cc)
+# Before Transformation
+## Highly Positive Skew
+![image](https://github.com/harinidq/Ex-06-Feature-Transformation/assets/113497680/12932b65-1f00-4cb9-9fd8-f24c09cad929)
+## Highly Negative Skew
+![image](https://github.com/harinidq/Ex-06-Feature-Transformation/assets/113497680/e632c937-91f7-47cf-89b1-a8b28c7f03e4)
+## Moderate Positive Skew
+![image](https://github.com/harinidq/Ex-06-Feature-Transformation/assets/113497680/2dc266b0-562a-4c58-b652-ef88079ccbe0)
+## Moderate Negative Skew
+![image](https://github.com/harinidq/Ex-06-Feature-Transformation/assets/113497680/4e034dbf-0bc6-42cc-8382-558aaa69a678)
+# Log Transformation
+## Highly Positive Skew
+![image](https://github.com/harinidq/Ex-06-Feature-Transformation/assets/113497680/f060e11b-14b5-4b15-8de0-8188dd926034)
+## Moderate Positive Skew
+![image](https://github.com/harinidq/Ex-06-Feature-Transformation/assets/113497680/fe2d60f9-3626-46b2-9966-f5838a23e1cc)
+# Reciprocal Transformation
+![image](https://github.com/harinidq/Ex-06-Feature-Transformation/assets/113497680/5be1a5fd-9294-42c9-9840-7a953a56ac0c)
+# Square Root Transformation
+![image](https://github.com/harinidq/Ex-06-Feature-Transformation/assets/113497680/d2e03280-c744-4a71-b8bb-12d0cd8e9885)
+# Power Transformation
+## Moderate Positive Skew
+![image](https://github.com/harinidq/Ex-06-Feature-Transformation/assets/113497680/3e6b61c4-57ac-4485-90d2-a3d8c642e1af)
+## Moderate Negative Skew
+![image](https://github.com/harinidq/Ex-06-Feature-Transformation/assets/113497680/a19f481b-b8c0-4465-85a1-d58469c33e38)
+# Quantile Transformation
+## Moderate Negative Skew
+![image](https://github.com/harinidq/Ex-06-Feature-Transformation/assets/113497680/60cfd963-e151-4484-b762-266c706e4164)
 
 # RESULT:
 Thus feature transformation is done for the given dataset.
